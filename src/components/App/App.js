@@ -5,7 +5,6 @@ import Button from '../Button/Button';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import * as API from '../../services/apiImg';
-// import apiImg from '../../services/apiImg';
 
 
 class App extends Component {
@@ -30,16 +29,20 @@ class App extends Component {
       .then(responseData => {
         this.setState({ images: responseData.data.hits });
       })
+      .catch(error => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
   };
   fetchImg = () => {
     const { seachQuery, currentPage } = this.state;
-    API.getImages(seachQuery, currentPage + 1).then(responseData => {
-      this.setState(prevState => ({
-        images: [...prevState.images, ...responseData.data.hits],
-        currentPage: prevState.currentPage + 1,
-      }));
-    });
+    API.getImages(seachQuery, currentPage + 1)
+      .then(responseData => {
+        this.setState(prevState => ({
+          images: [...prevState.images, ...responseData.data.hits],
+          currentPage: prevState.currentPage + 1,
+        }));
+      })
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ isLoading: false }));
   };
 
   render() {
@@ -47,8 +50,8 @@ class App extends Component {
     const shouldRenderLoadMoreButton = images.length > 11 && !isLoading;
     return (
       <div className={s.container}>
-        <SearchBar onSubmit={this.onChangeQuery} />
         {error && <h1>No image found</h1>}
+        <SearchBar onSubmit={this.onChangeQuery} />
         {isLoading && <Loader />}
         {!isLoading && <ImageGallery images={images} />}
         {shouldRenderLoadMoreButton && <Button onClick={this.fetchImg} />}
