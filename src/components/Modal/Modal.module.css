@@ -1,0 +1,29 @@
+.Modal__backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  transition: opacity var(--animation-duration) var(--timing-function);
+}
+.Modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.Modal__content {
+   transform: scale(0.95);
+  transition: transform var(--animation-duration) var(--timing-function);
+}
+.Modal__content > img {
+  display: block;
+  max-height: 70%;
+  max-width: 70%;
+}

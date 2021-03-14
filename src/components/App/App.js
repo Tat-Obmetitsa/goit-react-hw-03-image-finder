@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import SearchBar from '../Searchbar/Searchbar';
-// import s from '../App/App.module.css';
+import s from '../App/App.module.css';
 import Button from '../Button/Button';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
@@ -27,41 +27,35 @@ class App extends Component {
   onChangeQuery = seachQuery => {
     this.setState({ seachQuery, isLoading: true });
     API.getImages(seachQuery)
-      .then(prevState => {
-        console.log('prevState', prevState);
-        this.setState({ images: prevState.data.hits });
+      .then(responseData => {
+        this.setState({ images: responseData.data.hits });
       })
       .finally(() => this.setState({ isLoading: false }));
   };
   fetchImg = () => {
     const { seachQuery, currentPage } = this.state;
-    API.getImages(seachQuery, currentPage + 1).then(prevState => {
+    API.getImages(seachQuery, currentPage + 1).then(responseData => {
       this.setState(prevState => ({
+        images: [...prevState.images, ...responseData.data.hits],
         currentPage: prevState.currentPage + 1,
-        images: [...prevState.images, ...prevState.data.hits],
       }));
     });
   };
 
   render() {
     const { images, isLoading, error } = this.state;
-    const shouldRenderLoadMoreButton = images.length > 0 && !isLoading;
+    const shouldRenderLoadMoreButton = images.length > 11 && !isLoading;
     return (
-      <>
+      <div className={s.container}>
         <SearchBar onSubmit={this.onChangeQuery} />
         {error && <h1>No image found</h1>}
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <ImageGallery images={images}/>
-        )}
+        {isLoading ? <Loader /> : <ImageGallery images={images} />}
         {shouldRenderLoadMoreButton && <Button onClick={this.fetchImg} />}
-      </>
+      </div>
     );
   }
 }
 export default App;
-
-
+ 
 
 

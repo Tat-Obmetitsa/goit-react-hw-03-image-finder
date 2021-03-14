@@ -24,4 +24,6 @@ img {
   margin-right: auto;
   max-height: 100%;
   max-width: 100%;
+  object-fit: cover;
+  transition: transform var(--animation-duration) var(--timing-function);
 }

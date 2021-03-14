@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { createPortal } from 'react-dom';
-
+import s from '../Modal/Modal.module.css';
 const modalRoot = document.querySelector('#modal-root');
 
 export default class Modal extends Component {
@@ -18,7 +18,7 @@ export default class Modal extends Component {
     }
   };
 
-  closeModal = event => {
+  closeModalClick = event => {
     if (event.currentTarget === event.target) {
       this.props.onClose();
     }
@@ -26,8 +26,9 @@ export default class Modal extends Component {
 
   render() {
     return createPortal(
-      <div className="Modal__backdrop" onClick={this.closeModalClick}>
-        <div className="Modal__content">{this.props.children}</div>
+      <div className={s.Modal__backdrop} onClick={this.closeModalClick}>
+        <div className={s.Modal__overlay}></div>
+        <div className={s.Modal__content}>{this.props.children}</div>
       </div>,
       modalRoot,
     );
