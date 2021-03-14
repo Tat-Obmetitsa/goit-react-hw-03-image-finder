@@ -11,7 +11,7 @@ class App extends Component {
   state = {
     images: [],
     isLoading: false,
-    error: null,
+    error: false,
     currentPage: 1,
     seachQuery: '',
   };
@@ -29,7 +29,8 @@ class App extends Component {
       .then(responseData => {
         this.setState({ images: responseData.data.hits });
       })
-      .catch(error => this.setState({ error }))
+      .catch(error => this.setState({ error: true})
+      )
       .finally(() => this.setState({ isLoading: false }));
   };
   fetchImg = () => {
@@ -41,7 +42,7 @@ class App extends Component {
           currentPage: prevState.currentPage + 1,
         }));
       })
-      .catch(error => this.setState({ error }))
+      .catch(error => this.setState({  error: true }))
       .finally(() => this.setState({ isLoading: false }));
   };
 
@@ -50,8 +51,8 @@ class App extends Component {
     const shouldRenderLoadMoreButton = images.length > 11 && !isLoading;
     return (
       <div className={s.container}>
-        {error && <h1>No image found</h1>}
         <SearchBar onSubmit={this.onChangeQuery} />
+        {error && <h1>No image found</h1>}
         {isLoading && <Loader />}
         {!isLoading && <ImageGallery images={images} />}
         {shouldRenderLoadMoreButton && <Button onClick={this.fetchImg} />}
