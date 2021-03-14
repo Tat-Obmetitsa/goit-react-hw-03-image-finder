@@ -10,8 +10,6 @@ class SearchBar extends Component {
     this.props.onSubmit(this.state.query);
     this.setState({ query: '' });
   };
-
-  // const { onDeleteTodo, completed, onToggleCompleted, } = onSubmit;
   render() {
     return (
       <header className="Searchbar">
