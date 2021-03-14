@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Modal from '../Modal/Modal';
+import s from '../ImageGallery/ImageGallery.module.css';
 class ImageGallery extends Component {
   state = {
     showModal: false,
@@ -28,7 +29,7 @@ class ImageGallery extends Component {
             {<img src={modalImage} alt="#" />}
           </Modal>
         )}
-        <ul>
+        <ul className={s.gallery}>
           {images.map(e => (
             <ImageGalleryItem
               key={e.id}
