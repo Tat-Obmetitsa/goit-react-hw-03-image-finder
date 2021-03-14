@@ -3,33 +3,33 @@ import { createPortal } from 'react-dom';
 
 const modalRoot = document.querySelector('#modal-root');
 
-class Modal extends Component {
+export default class Modal extends Component {
   componentDidMount() {
-    console.log('Modal componentDidMount');
-    window.addEventListener('keydown', this.handleKeyDown());
+    window.addEventListener('keydown', this.closeModal);
   }
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown());
+    window.removeEventListener('keydown', this.closeModal);
   }
-  handleKeyDown = e => {
+  closeModal = e => {
     if (e.code === 'Escape') {
-      console.log('ESC');
+      console.log('Нажали ESC, нужно закрыть модалку');
+
       this.props.onClose();
     }
   };
-  handleBackdropClick = e => {
-    console.log('BackdropClick');
+
+  closeModal = event => {
+    if (event.currentTarget === event.target) {
+      this.props.onClose();
+    }
   };
+
   render() {
     return createPortal(
-      <div className="Overlay onClick={this.handleBackdropClick}">
-        <div className="Modal">
-          <img src="" alt="" />
-        </div>
+      <div className="Modal__backdrop" onClick={this.closeModalClick}>
+        <div className="Modal__content">{this.props.children}</div>
       </div>,
       modalRoot,
     );
   }
 }
-
-export default Modal;

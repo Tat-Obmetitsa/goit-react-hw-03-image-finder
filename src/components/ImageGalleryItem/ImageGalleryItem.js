@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
+// import PropTypes from 'prop-types';
 
-class ImageGalleryItem extends Component {
-  render() {
-    const { images, onClick } = this.props;
+const ImageGalleryItem = ({ url, alt, openModal, modalImage }) => {
+  return (
+    <li onClick={() => openModal(modalImage)} className="ImageGalleryItem">
+      <img src={url} alt={alt} />
+    </li>
+  );
+};
 
-    return images.map(({ id, webformatURL, largeImageURL, tags }) => (
-      <li key={id} onClick={() => onClick(largeImageURL, tags)}>
-        <img src={webformatURL} alt={tags} />
-      </li>
-    ));
-  }
-}
+// ImageGalleryItem.propTypes = {
+//   openModal: PropTypes.func.isRequired,
+//   modalImage: PropTypes.string.isRequired,
+//   url: PropTypes.string.isRequired,
+//   alt: PropTypes.string.isRequired,
+// };
 
 export default ImageGalleryItem;

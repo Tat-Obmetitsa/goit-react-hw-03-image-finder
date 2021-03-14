@@ -3,58 +3,48 @@ import SearchBar from '../Searchbar/Searchbar';
 // import s from '../App/App.module.css';
 import Button from '../Button/Button';
 import ImageGallery from '../ImageGallery/ImageGallery';
-// import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Loader from '../Loader/Loader';
-import Modal from '../Modal/Modal';
-import apiImg from '../../services/apiImg';
+import * as API from '../../services/apiImg';
+// import apiImg from '../../services/apiImg';
 // import shortid from 'shortid';
 
 class App extends Component {
   state = {
     images: [],
-    filter: '',
     isLoading: false,
-    showModal: false,
     error: null,
     currentPage: 1,
     seachQuery: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
+    const { seachQuery, currentPage } = this.state;
     if (prevState.searchQuery !== this.state.searchQuery) {
-      this.fetchImg();
+      this.fetchImg(seachQuery, currentPage);
     }
   }
 
-  onChangeQuery = query => {
-    this.setState({ serchQuery: query, currentPage: 1, images: {} });
-    this.fetchImg();
-  };
-  fetchImg = () => {
-    const { currentPage, searchQuery } = this.state;
-    const options = { searchQuery, currentPage };
-
-    this.setState({ isLoading: true });
-
-    apiImg
-      .fetchImg(options)
-      .then(images => {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...images],
-          currentPage: prevState.currentPage + 1,
-        }));
+  onChangeQuery = seachQuery => {
+    this.setState({ seachQuery, isLoading: true });
+    API.getImages(seachQuery)
+      .then(prevState => {
+        console.log('prevState', prevState);
+        this.setState({ images: prevState.data.hits });
       })
-      .catch(error => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
   };
-
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+  fetchImg = () => {
+    const { seachQuery, currentPage } = this.state;
+    API.getImages(seachQuery, currentPage + 1).then(prevState => {
+      this.setState(prevState => ({
+        currentPage: prevState.currentPage + 1,
+        images: [...prevState.images, ...prevState.data.hits],
+      }));
+    });
   };
+
   render() {
-    const { images, showModal, isLoading, error } = this.state;
+    const { images, isLoading, error } = this.state;
     const shouldRenderLoadMoreButton = images.length > 0 && !isLoading;
     return (
       <>
@@ -63,14 +53,9 @@ class App extends Component {
         {isLoading ? (
           <Loader />
         ) : (
-          <ImageGallery
-            toggleModal={this.toggleModal}
-            showModal={showModal}
-            images={images}
-          />
+          <ImageGallery images={images}/>
         )}
-        {shouldRenderLoadMoreButton && <Button onClick={this.fetchImg()} />}
-        {showModal && <Modal onClose={this.toggleModal} />}
+        {shouldRenderLoadMoreButton && <Button onClick={this.fetchImg} />}
       </>
     );
   }
