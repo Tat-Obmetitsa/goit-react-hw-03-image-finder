@@ -29,9 +29,17 @@ class App extends Component {
       .then(responseData => {
         this.setState({ images: responseData.data.hits });
       })
-      .catch(error => this.setState({ error: true})
-      )
-      .finally(() => this.setState({ isLoading: false }));
+      .catch(error => {
+        throw new Error(error);
+      })
+      .finally(() => {
+        if (this.state.images.length >= 1) {
+          this.setState({ error: false });
+        } else {
+          this.setState({ error: true });
+        }
+        this.setState({ isLoading: false });
+      });
   };
   fetchImg = () => {
     const { seachQuery, currentPage } = this.state;
@@ -41,17 +49,16 @@ class App extends Component {
           images: [...prevState.images, ...responseData.data.hits],
           currentPage: prevState.currentPage + 1,
         }));
-        if (currentPage >= 1) {
-          window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: 'smooth',
-          });
-        }
+          if (currentPage >= 1) {
+              window.scrollTo({
+                  top: document.documentElement.scrollHeight,
+                  behavior: 'smooth',
+              });
+          }
       })
-      .catch(error => this.setState({  error: true }))
+      .catch(error => this.setState({ error: true }))
       .finally(() => this.setState({ isLoading: false }));
   };
-
   render() {
     const { images, isLoading, error } = this.state;
     const shouldRenderLoadMoreButton = images.length > 11 && !isLoading;
