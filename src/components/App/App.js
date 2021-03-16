@@ -24,7 +24,7 @@ class App extends Component {
   }
 
   onChangeQuery = seachQuery => {
-    this.setState({ seachQuery, isLoading: true, error: null });
+    this.setState({ seachQuery, isLoading: true });
     API.getImages(seachQuery)
       .then(responseData => {
         this.setState({ images: responseData.data.hits });
