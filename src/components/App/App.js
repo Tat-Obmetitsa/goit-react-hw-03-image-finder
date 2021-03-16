@@ -41,7 +41,7 @@ class App extends Component {
           images: [...prevState.images, ...responseData.data.hits],
           currentPage: prevState.currentPage + 1,
         }));
-        if (currentPage !== 1) {
+        if (currentPage >= 1) {
           window.scrollTo({
             top: document.documentElement.scrollHeight,
             behavior: 'smooth',
